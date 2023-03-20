@@ -2,8 +2,17 @@ const express = require('express')
 const fs = require('fs')
 const app = express()
 const port = 5000
+const cors = require('cors')
+// var bodyParser = require('body-parser')
 
+app.use(cors())
+// app.use(bodyParser.json({type:["application/json", "application/csp-report"]}))
+
+// const bodyParser  = require('body-parser');
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/users', (req, res) => {
     const users = getUserData()
@@ -11,22 +20,18 @@ app.get('/users', (req, res) => {
 })
 
 app.post('/users/add', (req, res) => {
-    //get the existing user data
     const existUsers = getUserData()
-    
-    //get the new user data from post request
     const userData = req.body
-   
-    //append the user data
+    console.log("POST userdata",userData);
     existUsers.push(userData)
-    //save the new user data
+    console.log("POST",existUsers);
     saveUserData(existUsers);
     res.send({success: true, msg: 'User data added successfully'})
 })
 
 app.delete('/users/:id', (req, res) => {
     const id = Number(req.params.id)
-    console.log("id", id)
+    console.log("DELETE", id)
     const existUsers = getUserData()
     const filterUser = existUsers.filter(users => {
         return users.id !== id
@@ -40,24 +45,18 @@ app.delete('/users/:id', (req, res) => {
 app.put('/users/:id', (req, res) => {
     const id = Number(req.params.id)
     const data = req.body
+    console.log("PUT userdata",data);
     const existUsers = getUserData()
     const user = existUsers.find(user => user.id === id);
-    console.log(user);
-    // const updateUser = existUsers.filter(users => {
-    //     return users.id !== id
-    //   });
-    // updateUser.push(userData)
-    // saveUserData(updateUser)
+    console.log("PUT",user);
     user.firstName = data.firstName;
     user.lastName = data.lastName;
     user.email = data.email;
     user.phone = data.phone;
     user.gender = data.gender;
-
     saveUserData(existUsers)
     res.send({success: true, msg: 'User data updated successfully'})
 })
-
 
 const getUserData = () => {
     const jsonData = fs.readFileSync('users.txt')
@@ -68,7 +67,6 @@ const saveUserData = (data) => {
     const stringifyData = JSON.stringify(data)
     fs.writeFileSync('users.txt', stringifyData)
 }
-
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
