@@ -1,18 +1,22 @@
 const express = require('express')
 const fs = require('fs')
 const app = express()
-const port = 5000
 const cors = require('cors')
-// var bodyParser = require('body-parser')
+var jwt = require("jsonwebtoken")
+var bcrypt = require("bcrypt")
+
+const port = 5080
 
 app.use(cors())
-// app.use(bodyParser.json({type:["application/json", "application/csp-report"]}))
-
-// const bodyParser  = require('body-parser');
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
+
+router.post("/login", signin, function (req, res) {
+});
+
+router.post("/register", signup, function (req, res) {
+});
 
 app.get('/users', (req, res) => {
     const users = getUserData()
