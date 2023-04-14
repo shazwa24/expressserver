@@ -60,6 +60,16 @@ const verifyToken = (req, res, next) => {
     });
 };
 
+app.post('/users/add', (req, res) => {
+    const existUsers = getUserData()
+    const userData = req.body
+    console.log("POST userdata", userData);
+    existUsers.push(userData)
+    console.log("POST", existUsers);
+    saveUserData(existUsers);
+    res.send({ success: true, msg: 'User data added successfully' })
+})
+
 app.use(verifyToken);
 
 app.get("/users", async (request, response) => {
